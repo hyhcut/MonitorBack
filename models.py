@@ -15,8 +15,9 @@ class User(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=True)
-    power = db.Column(db.Integer, nullable=False)
+    power_id = db.Column(db.Integer, db.ForeignKey('d_power.code'))
     last_time = db.Column(db.DateTime)
+    power = db.relationship("DictPower", uselist=False, lazy="joined")
 
     def __init__(self, dict):
         for key, value in dict.items():
@@ -31,3 +32,18 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
+    def list_show(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'power': self.power.name,
+            'last_time': self.last_time
+        }
+
+
+class DictPower(db.Model):
+    __tablename__ = 'd_power'
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    code = db.Column(db.Integer, unique=True, nullable=False)
+    name = db.Column(db.String(255))

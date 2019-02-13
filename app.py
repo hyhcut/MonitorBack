@@ -35,7 +35,7 @@ def login():
         db.session.commit()
         return jsonify(Ajax.success({
             'message': "登陆成功",
-            'power': user.power
+            'power': user.power_id
         }))
     else:
         return jsonify(Ajax.error("密码错误"))
@@ -50,10 +50,11 @@ def login():
 @app.route('/user/list', methods=['POST'])
 def user_list():
     result = []
-    user_list = User.query.all()
+    user_list= User.query.all()
+    # user_list = User.query.filter(User.id != 1).all()
     for user in user_list:
-        result.append(user.to_dict())
-    return Ajax.success(result)
+        result.append(user.list_show())
+    return jsonify(Ajax.success(result))
 
 
 if __name__ == '__main__':
