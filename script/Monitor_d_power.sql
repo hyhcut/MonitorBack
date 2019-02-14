@@ -8,4 +8,5 @@ create table d_power
     unique (code)
 );
 
-INSERT INTO Monitor.d_power (id, code, name) VALUES (1, 999, '管理员');
+INSERT INTO monitor.d_power (id, code, name) VALUES (1, 999, '超级管理员');
+INSERT INTO monitor.d_power (id, code, name) VALUES (2, 1, '用户');

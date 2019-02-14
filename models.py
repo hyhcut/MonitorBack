@@ -37,8 +37,9 @@ class User(db.Model):
         return {
             'id': self.id,
             'username': self.username,
+            'power_id': self.power_id,
             'power': self.power.name,
-            'last_time': self.last_time
+            'last_time': self.last_time.strftime("%Y-%m-%d %H:%M:%S") if self.last_time else ""
         }
 
 
@@ -47,3 +48,21 @@ class DictPower(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     code = db.Column(db.Integer, unique=True, nullable=False)
     name = db.Column(db.String(255))
+
+    def select_show(self):
+        return {
+            'label': self.name,
+            'value': self.code
+        }
+
+
+class DictServerType(db.Model):
+    __tablename__ = 'd_server_type'
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    name = db.Column(db.String(255), unique=True)
+
+    def select_show(self):
+        return {
+            'label': self.name,
+            'value': self.id
+        }
