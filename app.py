@@ -1,10 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from flask_cors import *
 # from flask_login import login_user, logout_user, login_required
 from ext import db
 from models import *
 import util.Ajax as Ajax
 import datetime
+from Link import Link
 
 app = Flask(__name__)
 app.config.from_object("config")
@@ -87,7 +88,6 @@ def user_update():
         return Ajax.error('原密码错误')
 
 
-
 @app.route('/user/delete', methods=['POST'])
 def user_delete():
     id = request.json.get('id')
@@ -113,6 +113,16 @@ def server_type_list():
     for server_type in list:
         result.append(server_type.select_show())
     return Ajax.success(result)
+
+
+@app.route('/manual', methods=['POST'])
+def manual():
+    server = request.json
+    link = Link(server.get("name"), server.get("address"), server.get("username"), server.get("password"), None)
+    if link.test():
+        return Ajax.success(link.manual())
+    else:
+        return Ajax.error("服务器无法连接")
 
 
 if __name__ == '__main__':
