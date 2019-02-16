@@ -148,5 +148,25 @@ def server_add():
     return Ajax.success("aaa")
 
 
+@app.route('/server/delete', methods=['POST'])
+def server_delete():
+    server = Server.query.get(int(request.json.get('id')))
+    db.session.delete(server)
+    db.session.commit()
+    return Ajax.success("删除成功")
+
+
+@app.route('/server/update', methods=['POST'])
+def server_update():
+    dict = request.json
+    server = Server.query.get(int(dict.get('id')))
+    if server.name != dict.get("name") and Server.query.filter(Server.name == dict.get('name')).all():
+        return Ajax.error('服务器名称已存在')
+    else:
+        server.__init__(dict)
+        db.session.commit()
+        return Ajax.success('修改成功')
+
+
 if __name__ == '__main__':
     app.run()
