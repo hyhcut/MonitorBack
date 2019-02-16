@@ -125,5 +125,28 @@ def manual():
         return Ajax.error("服务器无法连接")
 
 
+@app.route('/server/list', methods=['POST'])
+def server_list():
+    result = []
+    server_list = Server.query.all()
+    for server in server_list:
+        result.append(server.list_show())
+    return Ajax.success(result)
+
+
+@app.route('/server/get', methods=['POST'])
+def server_get():
+    server = Server.query.get(int(request.json.get('id')))
+    return Ajax.success(server.list_show())
+
+
+@app.route('/server/add', methods=['POST'])
+def server_add():
+    server = Server(request.json)
+    db.session.add(server)
+    db.session.commit()
+    return Ajax.success("aaa")
+
+
 if __name__ == '__main__':
     app.run()

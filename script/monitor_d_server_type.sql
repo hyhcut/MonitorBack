@@ -7,5 +7,5 @@ create table d_server_type
     unique (name)
 );
 
-INSERT INTO monitor.d_server_type (id, name) VALUES (2, 'CentOS');
-INSERT INTO monitor.d_server_type (id, name) VALUES (1, 'Windows');
+INSERT INTO Monitor.d_server_type (id, name) VALUES (2, 'CentOS');
+INSERT INTO Monitor.d_server_type (id, name) VALUES (1, 'Windows');
