@@ -5,7 +5,8 @@ from ext import db
 from models import *
 import util.Ajax as Ajax
 import datetime
-from Link import Link
+from Windows import Link
+from Linux import Linux
 
 app = Flask(__name__)
 app.config.from_object("config")
@@ -118,11 +119,19 @@ def server_type_list():
 @app.route('/manual', methods=['POST'])
 def manual():
     server = request.json
-    link = Link(server.get("name"), server.get("address"), server.get("username"), server.get("password"), None)
-    if link.test():
-        return Ajax.success(link.manual())
-    else:
-        return Ajax.error("服务器无法连接")
+    type = server.get('server_type')
+    if type == 1:
+        link = Link(server.get("name"), server.get("address"), server.get("username"), server.get("password"), None)
+        if link.test():
+            return Ajax.success(link.manual())
+        else:
+            return Ajax.error("服务器无法连接")
+    elif type == 2:
+        link = Linux(server.get('name'), server.get('address'), server.get('username'), server.get('password'))
+        if link.connect():
+            return Ajax.success(link.manual())
+        else:
+            return Ajax.error("连接服务器超时")
 
 
 @app.route('/server/list', methods=['POST'])
@@ -145,7 +154,7 @@ def server_add():
     server = Server(request.json)
     db.session.add(server)
     db.session.commit()
-    return Ajax.success("aaa")
+    return Ajax.success("服务器创建成功")
 
 
 @app.route('/server/delete', methods=['POST'])

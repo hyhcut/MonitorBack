@@ -80,11 +80,10 @@ class Server(db.Model):
     note = db.Column(db.Text)
     server_type = db.relationship("DictServerType", uselist=False, lazy="joined")
 
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
+    def __init__(self, dict):
+        for key, value in dict.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
 
     def list_show(self):
         return {
@@ -93,5 +92,6 @@ class Server(db.Model):
             'type': self.server_type.name,
             'type_id': self.type_id,
             'address': self.address,
-            'username': self.username
+            'username': self.username,
+            'password': self.password
         }
