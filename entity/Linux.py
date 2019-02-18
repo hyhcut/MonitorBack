@@ -1,14 +1,11 @@
 from dataclasses import dataclass
+from entity.BaseLink import BaseLink
 import paramiko
 import re
 
 
 @dataclass
-class Linux:
-    name: str
-    host: str
-    user: str
-    password: str
+class Linux(BaseLink):
 
     def __post_init__(self):
         self.ssh = paramiko.SSHClient()
@@ -36,19 +33,3 @@ class Linux:
         total = int(re.search(pattern, mem_list[0]).group()) if re.search(pattern, mem_list[0]) else 0
         free = int(re.search(pattern, mem_list[2]).group()) if re.search(pattern, mem_list[2]) else 0
         return (100 * (total - free))//total
-
-    def manual(self):
-        return {
-            'name': self.name,
-            'address': self.host,
-            'info_list': [
-                {
-                    'name': 'CPU使用率',
-                    'value': self.cpu()
-                },
-                {
-                    'name': 'MEM使用率',
-                    'value': self.mem()
-                }
-            ]
-        }

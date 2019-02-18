@@ -1,12 +1,10 @@
 from flask import Flask, request
 from flask_cors import *
 # from flask_login import login_user, logout_user, login_required
-from ext import db
 from models import *
 import util.Ajax as Ajax
 import datetime
-from Windows import Link
-from Linux import Linux
+from server import LinkServer
 
 app = Flask(__name__)
 app.config.from_object("config")
@@ -120,18 +118,7 @@ def server_type_list():
 def manual():
     server = request.json
     type = server.get('server_type')
-    if type == 1:
-        link = Link(server.get("name"), server.get("address"), server.get("username"), server.get("password"), None)
-        if link.test():
-            return Ajax.success(link.manual())
-        else:
-            return Ajax.error("服务器无法连接")
-    elif type == 2:
-        link = Linux(server.get('name'), server.get('address'), server.get('username'), server.get('password'))
-        if link.connect():
-            return Ajax.success(link.manual())
-        else:
-            return Ajax.error("连接服务器超时")
+    return Ajax.success(LinkServer.base(type, server.get("name"), server.get("address"), server.get("username"), server.get("password")))
 
 
 @app.route('/server/list', methods=['POST'])
@@ -180,19 +167,8 @@ def server_update():
 @app.route('/server/view/monitor', methods=['POST'])
 def server_view_monitor():
     server = request.json
-    type = server.get("type_id")
-    if type == 1:
-        link = Link(server.get("name"), server.get("address"), server.get("username"), server.get("password"), None)
-        if link.test():
-            return Ajax.success(link.manual())
-        else:
-            return Ajax.error("服务器无法连接")
-    elif type == 2:
-        link = Linux(server.get('name'), server.get('address'), server.get('username'), server.get('password'))
-        if link.connect():
-            return Ajax.success(link.manual())
-        else:
-            return Ajax.error("连接服务器超时")
+    return Ajax.success(LinkServer.base(server.get("type_id"), server.get("name"), server.get("address"),
+                                        server.get("username"), server.get("password")))
 
 
 if __name__ == '__main__':
