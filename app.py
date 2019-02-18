@@ -117,8 +117,11 @@ def server_type_list():
 @app.route('/manual', methods=['POST'])
 def manual():
     server = request.json
-    type = server.get('server_type')
-    return Ajax.success(LinkServer.base(type, server.get("name"), server.get("address"), server.get("username"), server.get("password")))
+    flag, info = LinkServer.base(server.get('server_type'), server.get("name"), server.get("address"), server.get("username"), server.get("password"))
+    if flag:
+        return Ajax.success(info)
+    else:
+        return Ajax.error(info)
 
 
 @app.route('/server/list', methods=['POST'])
@@ -167,9 +170,13 @@ def server_update():
 @app.route('/server/view/monitor', methods=['POST'])
 def server_view_monitor():
     server = request.json
-    return Ajax.success(LinkServer.base(server.get("type_id"), server.get("name"), server.get("address"),
-                                        server.get("username"), server.get("password")))
+    flag, info = LinkServer.base(server.get("type_id"), server.get("name"), server.get("address"), server.get("username"),
+                                 server.get("password"))
+    if flag:
+        return Ajax.success(info)
+    else:
+        return Ajax.error(info)
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')

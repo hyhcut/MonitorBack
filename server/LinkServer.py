@@ -9,8 +9,8 @@ def base(type, name, address, username, password):
     elif type == 2:
         link = Linux(name, address, username, password)
     else:
-        return None
+        return False, "服务器类型不存在"
     if link.connect():
-        return link.base()
+        return True, link.base()
     else:
-        return "服务器无法连接"
+        return False, "服务器无法连接"
