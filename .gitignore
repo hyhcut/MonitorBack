@@ -108,3 +108,6 @@ venv.bak/
 
 #迁移虚拟环境
 move/
+
+# 数据库脚本
+script/
